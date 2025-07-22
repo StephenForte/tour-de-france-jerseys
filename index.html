@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tour de France Jersey Tracker - Live</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header-content">
+                <h1><i class="fas fa-bicycle"></i> Tour de France Jersey Tracker</h1>
+                <p class="subtitle">Live updates of the four prestigious jerseys after each stage</p>
+                <div class="live-indicator">
+                    <i class="fas fa-circle"></i> LIVE
+                </div>
+            </div>
+        </header>
+
+        <div class="controls-section">
+            <div class="year-selector">
+                <label for="yearSelect">Tour Year:</label>
+                <select id="yearSelect">
+                    <option value="2025">2025 (Current)</option>
+                    <option value="2024">2024</option>
+                    <option value="2023">2023</option>
+                    <option value="2022">2022</option>
+                    <option value="2021">2021</option>
+                    <option value="2020">2020</option>
+                </select>
+            </div>
+            
+            <div class="stage-selector">
+                <label for="stageSelect">Select Stage:</label>
+                <select id="stageSelect">
+                    <option value="1">Stage 1</option>
+                    <option value="2">Stage 2</option>
+                    <option value="3">Stage 3</option>
+                    <option value="4">Stage 4</option>
+                    <option value="5">Stage 5</option>
+                    <option value="6">Stage 6</option>
+                    <option value="7">Stage 7</option>
+                    <option value="8">Stage 8</option>
+                    <option value="9">Stage 9</option>
+                    <option value="10">Stage 10</option>
+                    <option value="11">Stage 11</option>
+                    <option value="12">Stage 12</option>
+                    <option value="13">Stage 13</option>
+                    <option value="14">Stage 14</option>
+                    <option value="15">Stage 15</option>
+                    <option value="16">Stage 16</option>
+                    <option value="17">Stage 17</option>
+                    <option value="18">Stage 18</option>
+                    <option value="19">Stage 19</option>
+                    <option value="20">Stage 20</option>
+                    <option value="21">Stage 21</option>
+                </select>
+            </div>
+
+            <div class="data-source">
+                <button id="refreshBtn" class="refresh-btn">
+                    <i class="fas fa-sync-alt"></i> Refresh Data
+                </button>
+                <div class="last-updated">
+                    Last updated: <span id="lastUpdated">Loading...</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="jerseys-grid">
+            <!-- Yellow Jersey -->
+            <div class="jersey-card yellow-jersey">
+                <div class="jersey-header">
+                    <div class="jersey-icon">
+                        <i class="fas fa-tshirt"></i>
+                    </div>
+                    <h2>Maillot Jaune</h2>
+                    <p class="jersey-description">Overall Leader</p>
+                </div>
+                <div class="rider-info" id="yellowRider">
+                    <div class="rider-placeholder">
+                        <i class="fas fa-user"></i>
+                        <p>Select a stage to view leader</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Green Jersey -->
+            <div class="jersey-card green-jersey">
+                <div class="jersey-header">
+                    <div class="jersey-icon">
+                        <i class="fas fa-tshirt"></i>
+                    </div>
+                    <h2>Maillot Vert</h2>
+                    <p class="jersey-description">Points Classification</p>
+                </div>
+                <div class="rider-info" id="greenRider">
+                    <div class="rider-placeholder">
+                        <i class="fas fa-user"></i>
+                        <p>Select a stage to view leader</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Polka Dot Jersey -->
+            <div class="jersey-card polka-jersey">
+                <div class="jersey-header">
+                    <div class="jersey-icon">
+                        <i class="fas fa-tshirt"></i>
+                    </div>
+                    <h2>Maillot à Pois Rouges</h2>
+                    <p class="jersey-description">King of the Mountains</p>
+                </div>
+                <div class="rider-info" id="polkaRider">
+                    <div class="rider-placeholder">
+                        <i class="fas fa-user"></i>
+                        <p>Select a stage to view leader</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- White Jersey -->
+            <div class="jersey-card white-jersey">
+                <div class="jersey-header">
+                    <div class="jersey-icon">
+                        <i class="fas fa-tshirt"></i>
+                    </div>
+                    <h2>Maillot Blanc</h2>
+                    <p class="jersey-description">Best Young Rider</p>
+                </div>
+                <div class="rider-info" id="whiteRider">
+                    <div class="rider-placeholder">
+                        <i class="fas fa-user"></i>
+                        <p>Select a stage to view leader</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="detailed-info">
+            <div class="stage-info">
+                <h3>Stage Information</h3>
+                <div id="stageDetails">
+                    <p>Select a stage to view details</p>
+                </div>
+            </div>
+
+            <div class="stage-map">
+                <h3>Stage Route</h3>
+                <div id="map" class="map-container">
+                    <div class="map-placeholder">
+                        <i class="fas fa-map"></i>
+                        <p>Select a stage to view route</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="rider-statistics">
+            <h3>Detailed Rider Statistics</h3>
+            <div class="stats-grid" id="riderStats">
+                <div class="stat-card">
+                    <h4>Stage Wins</h4>
+                    <div id="stageWins">-</div>
+                </div>
+                <div class="stat-card">
+                    <h4>Days in Yellow</h4>
+                    <div id="daysInYellow">-</div>
+                </div>
+                <div class="stat-card">
+                    <h4>Points Earned</h4>
+                    <div id="pointsEarned">-</div>
+                </div>
+                <div class="stat-card">
+                    <h4>KOM Points</h4>
+                    <div id="komPoints">-</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="historical-data">
+            <h3>Historical Jersey Winners</h3>
+            <div class="history-tabs">
+                <button class="tab-btn active" data-year="2025">2025</button>
+                <button class="tab-btn" data-year="2024">2024</button>
+                <button class="tab-btn" data-year="2023">2023</button>
+                <button class="tab-btn" data-year="2022">2022</button>
+                <button class="tab-btn" data-year="2021">2021</button>
+                <button class="tab-btn" data-year="2020">2020</button>
+            </div>
+            <div class="history-content" id="historyContent">
+                <div class="history-placeholder">
+                    <i class="fas fa-trophy"></i>
+                    <p>Select a year to view historical winners</p>
+                </div>
+            </div>
+        </div>
+
+        <footer class="footer">
+            <div class="footer-content">
+                <p>&copy; 2024 Tour de France Jersey Tracker. Live data integration.</p>
+                <div class="data-sources">
+                    <p>Data sources: Official Tour de France API, Historical Records</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script src="config.js"></script>
+    <script src="script.js"></script>
+</body>
+</html> 
